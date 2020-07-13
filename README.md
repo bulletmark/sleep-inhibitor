@@ -56,7 +56,7 @@ to execute the sleep inhibition lock.
 Requires Python 3.6 or later and the 3rd party ruamel.yaml package . Does not work with Python 2. 
 
 Arch users can just install [sleep-inhibitor from the
-AUR](https://aur.archlinux.org/packages/sleep-indicator) then skip to
+AUR](https://aur.archlinux.org/packages/sleep-inhibitor) then skip to
 the next Configuration section.
 
 The [sleep-inhibitor PyPi
