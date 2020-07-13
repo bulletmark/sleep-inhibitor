@@ -13,7 +13,7 @@ executable = stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH
 
 setup(
     name=name,
-    version='1.0',
+    version='1.1',
     description='Program to run plugins to inhibit system '
     'sleep/suspend/hibernate',
     long_description=here.joinpath('README.md').read_text(),

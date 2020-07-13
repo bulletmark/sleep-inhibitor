@@ -60,7 +60,7 @@ AUR](https://aur.archlinux.org/packages/sleep-indicator) then skip to
 the next Configuration section.
 
 The [sleep-inhibitor PyPi
-package](https://pypi.python.org/sleep-inhibitor) is available so you
+package](https://pypi.org/project/sleep-inhibitor) is available so you
 can install (or upgrade) it simply via:
 
 `sudo pip3 install -U sleep-inhibitor`

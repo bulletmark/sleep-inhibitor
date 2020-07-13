@@ -1,4 +1,6 @@
 venv/
+dist/
+build/
 .vscode
 .idea
 *.pyc
