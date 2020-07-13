@@ -1,0 +1,4 @@
+#!/usr/bin/python3
+from sys import exit
+from sleep_inhibitor import main
+exit(main())

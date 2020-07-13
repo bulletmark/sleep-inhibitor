@@ -1,0 +1,6 @@
+#!/bin/bash
+# Simply checks if the specified process name is currently running.
+# Mark Blakeney, Jul 2020.
+
+[[ $(pgrep -c "$1") -gt 0 ]] && exit 254
+exit 0
