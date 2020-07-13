@@ -13,7 +13,7 @@ executable = stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH
 
 setup(
     name=name,
-    version='1.2',
+    version='1.3',
     description='Program to run plugins to inhibit system '
     'sleep/suspend/hibernate',
     long_description=here.joinpath('README.md').read_text(),
@@ -30,7 +30,8 @@ setup(
         'Programming Language :: Python :: 3',
     ],
     data_files=[
-        ('share/{}'.format(name), ['README.md', '{}.conf'.format(name)]),
+        ('share/{}'.format(name), ['README.md', '{}.conf'.format(name),
+            '{}.service'.format(name)]),
         ('share/{}/plugins/'.format(name),
             [str(p) for p in Path('plugins').iterdir()]),
     ],

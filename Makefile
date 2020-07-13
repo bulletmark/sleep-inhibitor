@@ -42,8 +42,8 @@ $(DOCOUT): $(DOC)
 check:
 	flake8 $(PNAME).py $(NAME) setup.py
 	vermin --no-tips -i -q $(PNAME).py $(NAME) setup.py
-	python3 setup.py check
 	shellcheck plugins/*
+	python3 setup.py check
 
 clean:
 	@rm -vrf $(DOCOUT) *.pyc *.egg-info build/ dist/ __pycache__/

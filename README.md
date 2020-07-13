@@ -55,7 +55,8 @@ to execute the sleep inhibition lock.
 
 Requires Python 3.6 or later and the 3rd party ruamel.yaml package . Does not work with Python 2. 
 
-Arch users can just install [sleep-inhibitor from the
+[Arch](https://www.archlinux.org/) users can just install
+[sleep-inhibitor from the
 AUR](https://aur.archlinux.org/packages/sleep-inhibitor) then skip to
 the next Configuration section.
 
@@ -94,13 +95,16 @@ file](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.
 
 ### Automatic Startup as Systemd Service
 
-Copy the included
+If you installed from source or via `pip` then copy the included
 [`sleep-inhibitor.service`](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.service)
-to `/etc/systemd/system/`:
+to `/etc/systemd/system/` (note that [Arch](https://www.archlinux.org/)
+users who installed from
+[AUR](https://aur.archlinux.org/packages/sleep-inhibitor) can skip this
+step):
 
-    sudo cp sleep-inhibitor.service /etc/systemd/system/
+    sudo cp /usr/share/sleep-inhibitor/sleep-inhibitor.service /etc/systemd/system/
 
-Then enable and start it with:
+Start sleep-indicator and enable it to automatically start at reboot with:
 
     sudo systemctl enable --now sleep-inhibitor
 
