@@ -108,7 +108,7 @@ Start sleep-indicator and enable it to automatically start at reboot with:
 
     sudo systemctl enable --now sleep-inhibitor
 
-If you change the configuration then restart with:
+If you change the configuration file then restart with:
 
     sudo systemctl restart sleep-inhibitor
 

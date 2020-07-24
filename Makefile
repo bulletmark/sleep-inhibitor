@@ -12,7 +12,7 @@
 # General Public License at <http://www.gnu.org/licenses/> for more
 # details.
 
-NAME = sleep-inhibitor
+NAME = $(shell basename $(CURDIR))
 PNAME = $(subst -,_,$(NAME))
 
 DOC = README.md

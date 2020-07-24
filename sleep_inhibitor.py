@@ -160,7 +160,7 @@ def init():
     # Work out plugin dir
     plugin_dir = args.plugin_dir or conf.get('plugin_dir', plugin_dir)
 
-    # Iterate over configured outputs
+    # Iterate over configured plugins
     for plugin in plugins:
         Plugin(prog, plugin, plugin_dir)
 
