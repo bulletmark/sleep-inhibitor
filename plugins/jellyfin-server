@@ -1,0 +1,13 @@
+#!/bin/bash
+# Checks if jellyfin server is currently serving media to any user.
+# Mark Blakeney, Nov 2020.
+
+MYTOKEN="$1"
+PORT=${2:-8096}
+
+if curl -s "http://localhost:$PORT/sessions?api_key=$MYTOKEN" |
+    grep -qw NowPlayingItem; then
+    exit 254
+fi
+
+exit 0
