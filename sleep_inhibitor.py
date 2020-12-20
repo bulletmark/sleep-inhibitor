@@ -23,9 +23,8 @@ class Plugin:
     loglock = threading.Lock()
     threads = []
 
-    def __init__(self, prog, conf, plugin_dir):
+    def __init__(self, index, prog, conf, plugin_dir):
         'Constructor'
-        index = len(self.threads) + 1
         pathstr = conf.get('path')
         if not pathstr:
             sys.exit(f'Plugin #{index}: path must be defined')
@@ -160,9 +159,9 @@ def init():
     # Work out plugin dir
     plugin_dir = args.plugin_dir or conf.get('plugin_dir', plugin_dir)
 
-    # Iterate over configured plugins
-    for plugin in plugins:
-        Plugin(prog, plugin, plugin_dir)
+    # Iterate to create each configured plugins
+    for index, plugin in enumerate(plugins, 1):
+        Plugin(index, prog, plugin, plugin_dir)
 
 def main():
     'Main entry'
