@@ -2,12 +2,15 @@
 
 This is a simple program to inhibit sleep/suspend on
 [systemd](https://www.freedesktop.org/wiki/Software/systemd/) based
-Linux systems. Two simple plugins are (currently) provided:
+Linux systems. Three simple plugins are (currently) provided:
 
-1. Plugin to inhibit sleep while [Plex](https://www.plex.tv/) media server is serving
+1. Plugin to inhibit sleep while [Plex](https://plex.tv/) media server is serving
    content.
 
-2. Plugin to inhibit sleep while a specified process is running. I
+2. Plugin to inhibit sleep while [Jellyfin](https://jellyfin.org/) media server is serving
+   content.
+
+3. Plugin to inhibit sleep while a specified process is running. I
    use this to prevent sleep while my home backup is running.
 
 You can also create your own custom plugins. They are extremely trival
