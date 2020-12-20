@@ -2,7 +2,7 @@
 
 This is a simple program to inhibit sleep/suspend on
 [systemd](https://www.freedesktop.org/wiki/Software/systemd/) based
-Linux systems. Three simple plugins are (currently) provided:
+Linux systems. The following plugins are (currently) provided:
 
 1. Plugin to inhibit sleep while [Plex](https://plex.tv/) media server is serving
    content.
@@ -16,11 +16,11 @@ Linux systems. Three simple plugins are (currently) provided:
 You can also create your own custom plugins. They are extremely trival
 to create as can be seen in the [provided
 examples](https://github.com/bulletmark/sleep-inhibitor/tree/master/plugins).
-A plugin can be any executable which merely returns an exit code to
-indicate the system should can be slept/suspended, or not.
-_Sleep-inhibitor_ runs each plugin at the period you specify (or the
-default 5 minutes) and checks the result to inhibit sleep or not until
-at least the next check period.
+A plugin can be created in shell script or any programming language. It
+must simply return an exit code to indicate whether the system should can be
+slept/suspended, or not. _Sleep-inhibitor_ runs each plugin at the
+period you specify (or the default 5 minutes) and checks the result to
+inhibit sleep or not until at least the next check period.
 
 The latest version of this document and code is available at
 https://github.com/bulletmark/sleep-inhibitor.
