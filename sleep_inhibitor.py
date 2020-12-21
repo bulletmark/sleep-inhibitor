@@ -18,12 +18,19 @@ SUSP_CODE = 254
 # Default check period in minutes if not specified for plugin in config
 DEF_PERIOD = 5
 
+# On some non-systemd systems, systemd-inhibit emulators are used
+# instead. The first found below is the one we use:
+SYSTEMD_SLEEP_PROGS = (
+    'elogind-inhibit',
+    'systemd-inhibit',
+)
+
 class Plugin:
     'Class to manage each plugin'
     loglock = threading.Lock()
     threads = []
 
-    def __init__(self, index, prog, conf, plugin_dir):
+    def __init__(self, index, prog, conf, plugin_dir, inhibitor_prog):
         'Constructor'
         pathstr = conf.get('path')
         if not pathstr:
@@ -62,7 +69,7 @@ class Plugin:
         # While inhibiting, we run outself again via systemd-inhibit to
         # run the plugin in a loop which keeps the inhibit on while the
         # inhibit state is returned.
-        self.icmd = shlex.split(f'systemd-inhibit{what} --who="{prog.name}" '
+        self.icmd = shlex.split(f'{inhibitor_prog}{what} --who="{prog.name}" '
                 f'--why="{self.name}" {prog} -s {self.period} -i "{cmd}"')
 
         print(f'{self.name} [{path}] configured @ {period} minutes')
@@ -126,6 +133,24 @@ def init():
 
     prog = Path(sys.argv[0]).resolve()
 
+    # Work out what sleep inhibitor program to use
+    inhibitor_prog = None
+    for iprog in SYSTEMD_SLEEP_PROGS:
+        try:
+            res = subprocess.run(f'{iprog} --version'.split(),
+                    check=True, universal_newlines=True,
+                    stderr=subprocess.DEVNULL, stdout=subprocess.PIPE)
+        except Exception:
+            continue
+
+        vers = res.stdout.split('\n')[0].strip()
+        print(f'{prog.name} using {iprog}, {vers}')
+        inhibitor_prog = iprog
+
+    if not inhibitor_prog:
+        opts = ' or '.join(SYSTEMD_SLEEP_PROGS)
+        sys.exit(f'No systemd-inhibitor app installed from one of {opts}.')
+
     # Work out plugin and base dirs for this installation
     for bdir in (f'/usr/share/{prog.name}', f'/usr/local/share/{prog.name}'):
         plugin_dir = Path(bdir) / 'plugins'
@@ -142,7 +167,7 @@ def init():
             Path(f'/etc/{cname}')
 
     if not cfile.exists():
-        print(f'Configuration file {cfile} does not exist.',
+        print(f'{prog.name} configuration file {cfile} does not exist.',
                 file=sys.stderr)
         if base_dir and not args.config:
             print(f'Copy {base_dir}/{cname} to /etc and edit appropriately.',
@@ -161,7 +186,7 @@ def init():
 
     # Iterate to create each configured plugins
     for index, plugin in enumerate(plugins, 1):
-        Plugin(index, prog, plugin, plugin_dir)
+        Plugin(index, prog, plugin, plugin_dir, inhibitor_prog)
 
 def main():
     'Main entry'

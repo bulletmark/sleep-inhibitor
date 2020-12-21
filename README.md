@@ -2,7 +2,7 @@
 
 This is a simple program to inhibit sleep/suspend on
 [systemd](https://www.freedesktop.org/wiki/Software/systemd/) based
-Linux systems. The following plugins are (currently) provided:
+Linux systems. Some examples of the default plugins provided are:
 
 1. Plugin to inhibit sleep while [Plex](https://plex.tv/) media server is serving
    content.
@@ -13,7 +13,7 @@ Linux systems. The following plugins are (currently) provided:
 3. Plugin to inhibit sleep while a specified process is running. I
    use this to prevent sleep while my home backup is running.
 
-You can also create your own custom plugins. They are extremely trival
+You can also create your own custom plugins. They are extremely trivial
 to create as can be seen in the [provided
 examples](https://github.com/bulletmark/sleep-inhibitor/tree/master/plugins).
 A plugin can be created in shell script or any programming language. It
@@ -140,7 +140,7 @@ demonstrate. A plugin can be created in any language you prefer such as
 Shell, Python, Ruby, C/C++, etc.
 
 The plugin does not normally receive any arguments although you can
-choose to specify arbitary arguments to any plugin via the configuration
+choose to specify arbitrary arguments to any plugin via the configuration
 file, e.g. a sensitive token/password as the example
 [`plex-media-server`](https://github.com/bulletmark/sleep-inhibitor/blob/master/plugins/plex-media-server)
 plugin requires, or the process name for the example
