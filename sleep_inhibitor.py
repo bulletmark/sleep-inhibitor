@@ -10,6 +10,7 @@ import subprocess
 import threading
 import time
 import shlex
+import os
 from pathlib import Path
 
 # Return code which indicates plugin wants to inhibit suspend
@@ -23,7 +24,7 @@ class Plugin:
     loglock = threading.Lock()
     threads = []
 
-    def __init__(self, index, prog, conf, plugin_dir):
+    def __init__(self, index, prog, conf, plugin_dir, inhibitor_app):
         'Constructor'
         pathstr = conf.get('path')
         if not pathstr:
@@ -32,6 +33,7 @@ class Plugin:
         path = Path(pathstr)
         name = conf.get('name', path.name)
         self.name = f'Plugin {name}'
+        self.inhibitor_app = inhibitor_app
 
         if not path.is_absolute():
             if not plugin_dir:
@@ -62,7 +64,7 @@ class Plugin:
         # While inhibiting, we run outself again via systemd-inhibit to
         # run the plugin in a loop which keeps the inhibit on while the
         # inhibit state is returned.
-        self.icmd = shlex.split(f'systemd-inhibit{what} --who="{prog.name}" '
+        self.icmd = shlex.split(f'{self.inhibitor_app}{what} --who="{prog.name}" '
                 f'--why="{self.name}" {prog} -s {self.period} -i "{cmd}"')
 
         print(f'{self.name} [{path}] configured @ {period} minutes')
@@ -101,6 +103,18 @@ class Plugin:
         # Use a lock so thread messages do not get interleaved
         with cls.loglock:
             sys.stdout.write(msg)
+
+
+def find_inhibit_exe():
+    """ Search directories in $PATH for the inhibit executable """
+    paths = os.environ['PATH'].split(':')
+    for exe in ['systemd-inhibit', 'elogind-inhibit']:
+        for dirname in paths:
+            exe_path = os.path.join(dirname, exe)
+            if os.path.exists(exe_path) and os.access(exe_path, os.X_OK):
+                return exe_path
+    return None
+
 
 def init():
     'Program initialisation'
@@ -152,6 +166,12 @@ def init():
     from ruamel.yaml import YAML
     conf = YAML(typ='safe').load(cfile)
 
+    inhibitor_app = find_inhibit_exe()
+    if not inhibitor_app:
+        print('Unable to find an appropriate inhibitor application.',
+              file=sys.stderr)
+        sys.exit()
+
     plugins = conf.get('plugins')
     if not plugins:
         sys.exit('No plugins configured')
@@ -161,7 +181,7 @@ def init():
 
     # Iterate to create each configured plugins
     for index, plugin in enumerate(plugins, 1):
-        Plugin(index, prog, plugin, plugin_dir)
+        Plugin(index, prog, plugin, plugin_dir, inhibitor_app)
 
 def main():
     'Main entry'
