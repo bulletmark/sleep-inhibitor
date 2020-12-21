@@ -1,0 +1,5 @@
+#!/bin/sh
+# Check for apk (Alpine [Linux] Package Keeper) activity
+
+[ -n "$(lslocks -rn|grep /lib/apk/db/lock)" ] && exit 254
+exit 0
