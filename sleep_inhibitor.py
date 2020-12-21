@@ -44,7 +44,7 @@ class Plugin:
         if not path.exists():
             sys.exit(f'{self.name}: "{path}" does not exist')
 
-        period = int(conf.get('period', DEF_PERIOD))
+        period = float(conf.get('period', DEF_PERIOD))
         self.period = period * 60
         self.is_inhibiting = None
 
