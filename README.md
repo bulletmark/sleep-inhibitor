@@ -2,7 +2,9 @@
 
 This is a simple program to inhibit sleep/suspend on
 [systemd](https://www.freedesktop.org/wiki/Software/systemd/) based
-Linux systems. Some examples of the default plugins provided are:
+Linux systems (or on compatible systems running
+[elogind](https://github.com/elogind/elogind)). Some examples of the
+default plugins provided are:
 
 1. Plugin to inhibit sleep while [Plex](https://plex.tv/) media server is serving
    content.
