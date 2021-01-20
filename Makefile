@@ -13,7 +13,7 @@
 # details.
 
 NAME = $(shell basename $(CURDIR))
-PNAME = $(subst -,_,$(NAME))
+PYNAME = $(subst -,_,$(NAME))
 
 DOC = README.md
 DOCOUT = $(DOC:.md=.html)
@@ -40,8 +40,8 @@ $(DOCOUT): $(DOC)
 	markdown $< >$@
 
 check:
-	flake8 $(PNAME).py $(NAME) setup.py
-	vermin --no-tips -i -q $(PNAME).py $(NAME) setup.py
+	flake8 $(PYNAME).py setup.py
+	vermin --no-tips -i -q $(PYNAME).py setup.py
 	shellcheck plugins/*
 	python3 setup.py check
 

@@ -4,16 +4,14 @@
 
 from setuptools import setup
 from pathlib import Path
-import stat
 
 name = 'sleep-inhibitor'
 module = name.replace('-', '_')
 here = Path(__file__).resolve().parent
-executable = stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH
 
 setup(
     name=name,
-    version='1.7',
+    version='1.8',
     description='Program to run plugins to inhibit system '
     'sleep/suspend/hibernate',
     long_description=here.joinpath('README.md').read_text(),
@@ -35,6 +33,7 @@ setup(
         ('share/{}/plugins/'.format(name),
             [str(p) for p in Path('plugins').iterdir()]),
     ],
-    scripts=[f.name for f in here.iterdir() if f.name.startswith(name)
-        and f.is_file() and f.stat().st_mode & executable],
+    entry_points={
+        'console_scripts': ['{}={}:main'.format(name, module)],
+    },
 )
