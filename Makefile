@@ -29,10 +29,11 @@ uninstall:
 	pip3 uninstall $(NAME)
 
 sdist:
+	rm -rf dist
 	python3 setup.py sdist bdist_wheel
 
 upload: sdist
-	twine3 upload dist/*
+	twine3 upload --skip-existing dist/*
 
 doc:	$(DOCOUT)
 

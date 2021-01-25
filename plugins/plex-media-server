@@ -8,5 +8,5 @@ PORT=${2:-32400}
 nsessions=$(curl -s "localhost:$PORT/status/sessions?X-Plex-Token=$MYTOKEN" |
     sed -n "s/.*MediaContainer size=\"\(.*\)\".*/\1/p")
 
-[[ nsessions -gt 0 ]] && exit 254
+[[ $nsessions -gt 0 ]] && exit 254
 exit 0
