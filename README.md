@@ -67,7 +67,8 @@ the next Configuration section.
 
 The [sleep-inhibitor PyPi
 package](https://pypi.org/project/sleep-inhibitor) is available so you
-can install (or upgrade) it simply via:
+can install (or upgrade) it simply via the following command.
+Ensure that the `python3-pip` and `python3-wheel` packages are installed.
 
 `sudo pip3 install -U sleep-inhibitor`
 
