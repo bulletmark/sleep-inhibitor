@@ -58,33 +58,28 @@ to execute the sleep inhibition lock.
 
 ### Installation
 
-Requires Python 3.6 or later and the 3rd party ruamel.yaml package . Does not work with Python 2. 
-
 [Arch](https://www.archlinux.org/) users can just install
 [sleep-inhibitor from the
 AUR](https://aur.archlinux.org/packages/sleep-inhibitor) then skip to
 the next Configuration section.
 
-The [sleep-inhibitor PyPi
-package](https://pypi.org/project/sleep-inhibitor) is available so you
-can install (or upgrade) it simply via the following command.
-Ensure that the `python3-pip` and `python3-wheel` packages are installed.
+Python 3.6 or later is required. The 3rd party ruamel.yaml package is
+also required. Note [sleep-inhibitor is on
+PyPI](https://pypi.org/project/sleep-inhibitor/) so just ensure that
+`python3-pip` and `python3-wheel` are installed then type the following
+to install (or upgrade):
 
-`sudo pip3 install -U sleep-inhibitor`
+    $ sudo pip3 install -U sleep-inhibitor
 
 If you want to install it yourself from the source repository:
 
-```bash
-git clone https://github.com/bulletmark/sleep-inhibitor.git
-cd sleep-inhibitor
-sudo pip3 install -U .
-```
+    $ git clone https://github.com/bulletmark/sleep-inhibitor.git
+    $ cd sleep-inhibitor
+    $ sudo pip3 install -U .
 
 To uninstall:
 
-```bash
-sudo pip3 uninstall sleep-inhibitor
-```
+    $ sudo pip3 uninstall sleep-inhibitor
 
 ### Configuration
 
@@ -96,8 +91,8 @@ requirements. The instructions and a description of all configuration
 options are fully documented in the [sample configuration
 file](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.conf).
 
-    sudo cp /usr/share/sleep-inhibitor/sleep-inhibitor.conf /etc
-    sudo vim /etc/sleep-inhibitor.conf
+    $ sudo cp /usr/share/sleep-inhibitor/sleep-inhibitor.conf /etc
+    $ sudo vim /etc/sleep-inhibitor.conf
 
 ### Automatic Startup as Systemd Service
 
@@ -108,20 +103,20 @@ users who installed from
 [AUR](https://aur.archlinux.org/packages/sleep-inhibitor) can skip this
 step):
 
-    sudo cp /usr/share/sleep-inhibitor/sleep-inhibitor.service /etc/systemd/system/
+    $ sudo cp /usr/share/sleep-inhibitor/sleep-inhibitor.service /etc/systemd/system/
 
 Start sleep-indicator and enable it to automatically start at reboot with:
 
-    sudo systemctl enable --now sleep-inhibitor
+    $ sudo systemctl enable --now sleep-inhibitor
 
 If you change the configuration file then restart with:
 
-    sudo systemctl restart sleep-inhibitor
+    $ sudo systemctl restart sleep-inhibitor
 
 To see status and logs:
 
-    systemctl status sleep-inhibitor
-    journalctl -u sleep-inhibitor
+    $ systemctl status sleep-inhibitor
+    $ journalctl -u sleep-inhibitor
 
 ### Plugins
 
