@@ -1,0 +1,8 @@
+#! /bin/sh
+# Checks if a pulse-audio sink is in RUNNING state (ie. playing audio)
+
+user="$1"
+pactl_list=$(su "$user" -c 'LANG=en pactl -s "/run/user/'"$(id -u $user)"'/pulse/native" list sinks')
+
+echo "$pactl_list" | grep -qF 'State: RUNNING' && exit 254
+exit 0
