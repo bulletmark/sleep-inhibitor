@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Checks if jellyfin server is currently serving media to any user.
 # Mark Blakeney, Nov 2020.
 
