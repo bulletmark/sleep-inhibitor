@@ -1,0 +1,5 @@
+#! /bin/sh
+# Checks for audio playing
+
+grep -qF 'state: RUNNING' /proc/asound/card*/pcm*/sub*/status && exit 254
+exit 0
