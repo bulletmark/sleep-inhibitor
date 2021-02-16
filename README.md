@@ -126,8 +126,8 @@ distributed with this package just specify the plugin name (i.e. the
 file name) as the `path` parameter in the [configuration
 file](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.conf).
 To use your own custom plugins, just specify the absolute path to that
-plugin. E.g. you can put your custom plugin at `~/bin/myplugin` and just
-specify the full path (e.g. `~user/bin/myplugin`) in the [configuration
+plugin. E.g. you can put your custom plugin at `/home/user/bin/myplugin`
+and just specify that full path in the [configuration
 file](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.conf).
 
 A plugin can be any executable script/program which simply returns exit
