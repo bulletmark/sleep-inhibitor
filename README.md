@@ -6,13 +6,15 @@ Linux systems (or on compatible systems running
 [elogind](https://github.com/elogind/elogind)). Some examples of the
 default plugins provided are:
 
-1. Plugin to inhibit sleep while [Plex](https://plex.tv/) media server is serving
+1. Plugin to inhibit sleep while any audio is playing.
+
+2. Plugin to inhibit sleep while [Plex](https://plex.tv/) media server is serving
    content.
 
-2. Plugin to inhibit sleep while [Jellyfin](https://jellyfin.org/) media server is serving
+3. Plugin to inhibit sleep while [Jellyfin](https://jellyfin.org/) media server is serving
    content.
 
-3. Plugin to inhibit sleep while a specified process is running. I
+4. Plugin to inhibit sleep while a specified process is running. I
    use this to prevent sleep while my home backup is running.
 
 You can also create your own custom plugins. They are extremely trivial
@@ -94,7 +96,7 @@ file](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.
     $ sudo cp /usr/share/sleep-inhibitor/sleep-inhibitor.conf /etc
     $ sudo vim /etc/sleep-inhibitor.conf
 
-### Automatic Startup as Systemd Service
+### Automatic Startup as systemd Service
 
 If you installed from source or via `pip` then copy the included
 [`sleep-inhibitor.service`](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.service)
