@@ -5,7 +5,7 @@
 MYTOKEN="$1"
 PORT=${2:-32400}
 
-nsessions=$(curl -s "localhost:$PORT/status/sessions?X-Plex-Token=$MYTOKEN" |
+nsessions=$(curl -m 10 -s "localhost:$PORT/status/sessions?X-Plex-Token=$MYTOKEN" |
     sed -n "s/.*MediaContainer size=\"\(.*\)\".*/\1/p")
 
 [ -n "$nsessions" ] && [ "$nsessions" -gt 0 ] && exit 254

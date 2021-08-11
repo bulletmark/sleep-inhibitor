@@ -5,7 +5,7 @@
 MYTOKEN="$1"
 PORT=${2:-8096}
 
-if curl -s "http://localhost:$PORT/sessions?api_key=$MYTOKEN" |
+if curl -m 10 -s "http://localhost:$PORT/sessions?api_key=$MYTOKEN" |
     grep -qw NowPlayingItem; then
     exit 254
 fi

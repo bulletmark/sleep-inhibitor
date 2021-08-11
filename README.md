@@ -1,4 +1,4 @@
-## SLEEP-INHIBITOR
+#must# SLEEP-INHIBITOR
 
 This is a simple program to inhibit sleep/suspend on
 [systemd](https://www.freedesktop.org/wiki/Software/systemd/) based
@@ -82,6 +82,12 @@ If you want to install it yourself from the source repository:
 To uninstall:
 
     $ sudo pip3 uninstall sleep-inhibitor
+
+Some plugins require other software to be installed. E.g. If you use the
+[`plex-media-server`](https://github.com/bulletmark/sleep-inhibitor/blob/master/plugins/plex-media-server)
+and
+[`jellyfin-server`](https://github.com/bulletmark/sleep-inhibitor/blob/master/plugins/jellyfin-server)
+plugins then you must install [`curl`](https://curl.se/).
 
 ### Configuration
 
