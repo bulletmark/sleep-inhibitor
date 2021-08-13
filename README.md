@@ -85,7 +85,7 @@ To uninstall:
 
 Some plugins require other software to be installed. E.g. If you use the
 [`plex-media-server`](https://github.com/bulletmark/sleep-inhibitor/blob/master/plugins/plex-media-server)
-and
+or
 [`jellyfin-server`](https://github.com/bulletmark/sleep-inhibitor/blob/master/plugins/jellyfin-server)
 plugins then you must install [`curl`](https://curl.se/).
 
