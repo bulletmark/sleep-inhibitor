@@ -1,4 +1,4 @@
-#must# SLEEP-INHIBITOR
+## SLEEP-INHIBITOR
 
 This is a simple program to inhibit sleep/suspend on
 [systemd](https://www.freedesktop.org/wiki/Software/systemd/) based
