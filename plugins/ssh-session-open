@@ -1,5 +1,5 @@
 #!/bin/sh
 # Check for active SSH connections/sessions *to* the system
 
-pgrep -f 'sshd:.*pts' >/dev/null && exit 254
+pgrep -f 'sshd(\.[^:]+)?:.*pts' >/dev/null && exit 254
 exit 0
