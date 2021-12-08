@@ -111,6 +111,14 @@ class Plugin:
 
 def init():
     'Program initialisation'
+
+    # Don't run if the system does not support sleep
+    with open("/sys/power/state") as f:
+        states = f.read()
+    if states is '':
+        print("System does not support any sleep states, quitting.")
+        sys.exit(0)
+
     # Process command line options
     opt = argparse.ArgumentParser(description=__doc__.strip())
     opt.add_argument('-c', '--config',
