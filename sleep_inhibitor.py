@@ -112,13 +112,6 @@ class Plugin:
 def init():
     'Program initialisation'
 
-    # Don't run if the system does not support sleep
-    with open("/sys/power/state") as f:
-        states = f.read()
-    if states is '':
-        print("System does not support any sleep states, quitting.")
-        sys.exit(0)
-
     # Process command line options
     opt = argparse.ArgumentParser(description=__doc__.strip())
     opt.add_argument('-c', '--config',
@@ -128,6 +121,10 @@ def init():
     opt.add_argument('-s', '--sleep', type=float, help=argparse.SUPPRESS)
     opt.add_argument('-i', '--inhibit', help=argparse.SUPPRESS)
     args = opt.parse_args()
+
+    # Don't run if this system does not support sleep
+    if not Path('/sys/power/state').read_text():
+        sys.exit('System does not support any sleep states, quitting.')
 
     # This instance may be a child invocation merely to run and check
     # the plugin while it is inhibiting.
