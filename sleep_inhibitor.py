@@ -157,11 +157,9 @@ def init():
         sys.exit(f'No systemd-inhibitor app installed from one of {opts}.')
 
     # Work out plugin and base dirs for this installation
-    for bdir in (f'/usr/share/{prog.name}', f'/usr/local/share/{prog.name}'):
-        plugin_dir = Path(bdir) / 'plugins'
-        if plugin_dir.exists():
-            base_dir = plugin_dir.parent
-            break
+    plugin_dir = Path(sys.prefix) / 'share' / prog.name / 'plugins'
+    if plugin_dir.exists():
+        base_dir = plugin_dir.parent
     else:
         plugin_dir = None
         base_dir = None
