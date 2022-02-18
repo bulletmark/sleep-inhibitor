@@ -109,7 +109,7 @@ If you installed from source or via `pip` then copy the included
 to `/etc/systemd/system/` (note that [Arch](https://www.archlinux.org/)
 users who installed from
 [AUR](https://aur.archlinux.org/packages/sleep-inhibitor) can skip this
-step):
+first step):
 
     $ sudo cp /usr/share/sleep-inhibitor/sleep-inhibitor.service /etc/systemd/system/
 
@@ -160,7 +160,7 @@ usage: sleep-inhibitor [-h] [-c CONFIG] [-p PLUGIN_DIR]
 
 Program to run plugins to inhibit system sleep/suspend.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -c CONFIG, --config CONFIG
                         alternative configuration file
