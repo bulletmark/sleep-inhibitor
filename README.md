@@ -1,4 +1,6 @@
 ## SLEEP-INHIBITOR
+[![PyPi](https://img.shields.io/pypi/v/sleep-inhibitor)](https://pypi.org/project/sleep-inhibitor/)
+[![AUR](https://img.shields.io/aur/version/sleep-inhibitor)](https://aur.archlinux.org/packages/sleep-inhibitor/)
 
 This is a simple program to inhibit sleep/suspend on
 [systemd](https://www.freedesktop.org/wiki/Software/systemd/) based
