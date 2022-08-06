@@ -31,6 +31,13 @@ inhibit sleep or not until at least the next check period.
 The latest version of this document and code is available at
 https://github.com/bulletmark/sleep-inhibitor.
 
+:warning: **Warning**: Unfortunately this program is currently
+handicapped due to [this systemd
+issue](https://github.com/systemd/systemd/issues/14812). Until this
+issue is addressed, your system may not automatically [re-]suspend after
+it has been inhibited, even though _sleep-inhibitor_ has removed the
+inhibit.
+
 ### Motivation
 
 When looking for a solution for this issue I found the
@@ -63,12 +70,12 @@ to execute the sleep inhibition lock.
 ### Installation
 
 [Arch](https://www.archlinux.org/) users can just install
-[sleep-inhibitor from the
+[_sleep-inhibitor_ from the
 AUR](https://aur.archlinux.org/packages/sleep-inhibitor) then skip to
 the next Configuration section.
 
 Python 3.6 or later is required. The 3rd party ruamel.yaml package is
-also required. Note [sleep-inhibitor is on
+also required. Note [_sleep-inhibitor_ is on
 PyPI](https://pypi.org/project/sleep-inhibitor/) so just ensure that
 `python3-pip` and `python3-wheel` are installed then type the following
 to install (or upgrade):
