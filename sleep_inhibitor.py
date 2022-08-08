@@ -15,9 +15,6 @@ from pathlib import Path
 # Return code which indicates plugin wants to inhibit suspend
 SUSP_CODE = 254
 
-# Default check period in minutes if not specified for plugin in config
-DEF_PERIOD = 5
-
 # On some non-systemd systems, systemd-inhibit emulators are used
 # instead. The first found below is the one we use:
 SYSTEMD_SLEEP_PROGS = (
@@ -30,7 +27,8 @@ class Plugin:
     loglock = threading.Lock()
     threads = []
 
-    def __init__(self, index, prog, progname, conf, plugin_dir, inhibitor_prog):
+    def __init__(self, index, prog, progname, def_period, def_what,
+            conf, plugin_dir, inhibitor_prog):
         'Constructor'
         pathstr = conf.get('path')
         if not pathstr:
@@ -51,7 +49,7 @@ class Plugin:
         if not path.exists():
             sys.exit(f'{self.name}: "{path}" does not exist')
 
-        period = float(conf.get('period', DEF_PERIOD))
+        period = float(conf.get('period', def_period))
         self.period = period * 60
         self.is_inhibiting = None
 
@@ -63,7 +61,7 @@ class Plugin:
         # The normal periodic check command
         self.cmd = shlex.split(cmd)
 
-        whatval = conf.get('what')
+        whatval = conf.get('what', def_what)
         what = f' --what="{whatval}"' if whatval else ''
 
         # While inhibiting, we run outself again via systemd-inhibit to
@@ -111,7 +109,6 @@ class Plugin:
 
 def init():
     'Program initialisation'
-
     # Process command line options
     opt = argparse.ArgumentParser(description=__doc__.strip())
     opt.add_argument('-c', '--config',
@@ -187,9 +184,14 @@ def init():
     # Work out plugin dir
     plugin_dir = args.plugin_dir or conf.get('plugin_dir', plugin_dir)
 
+    # Get some global defaults
+    period = float(conf.get('period', 5))
+    what = conf.get('what')
+
     # Iterate to create each configured plugins
     for index, plugin in enumerate(plugins, 1):
-        Plugin(index, prog, progname, plugin, plugin_dir, inhibitor_prog)
+        Plugin(index, prog, progname, period, what, plugin, plugin_dir,
+                inhibitor_prog)
 
 def main():
     'Main entry'
