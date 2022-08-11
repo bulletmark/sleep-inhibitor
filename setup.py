@@ -16,7 +16,7 @@ setup(
     'sleep/suspend/hibernate',
     long_description=here.joinpath('README.md').read_text(),
     long_description_content_type="text/markdown",
-    url='https://github.com/bulletmark/{}'.format(name),
+    url=f'https://github.com/bulletmark/{name}',
     author='Mark Blakeney',
     author_email='mark.blakeney@bullet-systems.net',
     keywords='bash',
@@ -28,12 +28,10 @@ setup(
         'Programming Language :: Python :: 3',
     ],
     data_files=[
-        ('share/{}'.format(name), ['README.md', '{}.conf'.format(name),
-            '{}.service'.format(name)]),
-        ('share/{}/plugins/'.format(name),
-            [str(p) for p in Path('plugins').iterdir()]),
+        (f'share/{name}', ['README.md', f'{name}.conf', f'{name}.service']),
+        (f'share/{name}/plugins/', [str(p) for p in Path('plugins').iterdir()]),
     ],
     entry_points={
-        'console_scripts': ['{}={}:main'.format(name, module)],
+        'console_scripts': [f'{name}={module}:main'],
     },
 )
