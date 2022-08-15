@@ -27,15 +27,15 @@ class Plugin:
     loglock = threading.Lock()
     threads = []
 
-    def __init__(self, index, prog, progname, def_period, def_what,
-            conf, plugin_dir, inhibitor_prog):
+    def __init__(self, index, prog, progname, def_period, def_period_on,
+            def_what, conf, plugin_dir, inhibitor_prog):
         'Constructor'
         pathstr = conf.get('path')
         if not pathstr:
             sys.exit(f'Plugin #{index}: path must be defined')
 
         path = Path(pathstr)
-        name = conf.get('name', path.name)
+        name = conf.get('name', path.stem)
         self.name = f'Plugin {name}'
 
         if not path.is_absolute():
@@ -49,7 +49,15 @@ class Plugin:
         if not path.exists():
             sys.exit(f'{self.name}: "{path}" does not exist')
 
-        period = float(conf.get('period', def_period))
+        per = conf.get('period')
+        if per is None:
+            period = def_period
+            period_on_def = def_period_on
+        else:
+            period = float(per)
+            period_on_def = period
+
+        period_on = float(conf.get('period_on', period_on_def))
         self.period = period * 60
         self.is_inhibiting = None
 
@@ -68,9 +76,9 @@ class Plugin:
         # run the plugin in a loop which keeps the inhibit on while the
         # inhibit state is returned.
         self.icmd = shlex.split(f'{inhibitor_prog}{what} --who="{progname}" '
-                f'--why="{self.name}" {prog} -s {self.period} -i "{cmd}"')
+                f'--why="{self.name}" {prog} -s {period_on * 60} -i "{cmd}"')
 
-        print(f'{self.name} [{path}] configured @ {period} minutes')
+        print(f'{self.name} [{path}] configured @ {period}/{period_on} minutes')
 
         # Each plugin periodic check runs in it's own thread
         thread = threading.Thread(target=self.run)
@@ -186,12 +194,13 @@ def init():
 
     # Get some global defaults
     period = float(conf.get('period', 5))
+    period_on = float(conf.get('period_on', period))
     what = conf.get('what')
 
     # Iterate to create each configured plugins
     for index, plugin in enumerate(plugins, 1):
-        Plugin(index, prog, progname, period, what, plugin, plugin_dir,
-                inhibitor_prog)
+        Plugin(index, prog, progname, period, period_on, what, plugin,
+                plugin_dir, inhibitor_prog)
 
 def main():
     'Main entry'
