@@ -22,6 +22,26 @@ SYSTEMD_SLEEP_PROGS = (
     'systemd-inhibit',
 )
 
+def gettime(conf, field, default=None):
+    'Read time value from given conf.'
+    val = conf.get(field, default)
+    if val is None:
+        return None
+
+    if isinstance(val, str):
+        if val.endswith('s'):
+            num = float(val[:-1]) / 60
+        elif val.endswith('m'):
+            num = float(val[:-1])
+        elif val.endswith('h'):
+            num = float(val[:-1]) * 60
+        else:
+            sys.exit(f'Invalid time value "{field}: {val}".')
+    else:
+        num = float(val)
+
+    return num
+
 class Plugin:
     'Class to manage each plugin'
     loglock = threading.Lock()
@@ -49,15 +69,14 @@ class Plugin:
         if not path.exists():
             sys.exit(f'{self.name}: "{path}" does not exist')
 
-        per = conf.get('period')
-        if per is None:
+        period = gettime(conf, 'period')
+        if period is None:
             period = def_period
             period_on_def = def_period_on
         else:
-            period = float(per)
             period_on_def = period
 
-        period_on = float(conf.get('period_on', period_on_def))
+        period_on = gettime(conf, 'period_on', period_on_def)
         self.period = period * 60
         self.is_inhibiting = None
 
@@ -78,7 +97,9 @@ class Plugin:
         self.icmd = shlex.split(f'{inhibitor_prog}{what} --who="{progname}" '
                 f'--why="{self.name}" {prog} -s {period_on * 60} -i "{cmd}"')
 
-        print(f'{self.name} [{path}] configured @ {period}/{period_on} minutes')
+        per = round(period, 3)
+        per_on = round(period_on, 3)
+        print(f'{self.name} [{path}] configured @ {per}/{per_on} minutes')
 
         # Each plugin periodic check runs in it's own thread
         thread = threading.Thread(target=self.run)
@@ -193,8 +214,8 @@ def init():
     plugin_dir = args.plugin_dir or conf.get('plugin_dir', plugin_dir)
 
     # Get some global defaults
-    period = float(conf.get('period', 5))
-    period_on = float(conf.get('period_on', period))
+    period = gettime(conf, 'period', 5)
+    period_on = gettime(conf, 'period_on', period)
     what = conf.get('what')
 
     # Iterate to create each configured plugins
