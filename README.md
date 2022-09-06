@@ -109,7 +109,7 @@ options are fully documented in the [sample configuration
 file](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.conf).
 
     $ sudo cp /usr/share/sleep-inhibitor/sleep-inhibitor.conf /etc
-    $ sudo vim /etc/sleep-inhibitor.conf
+    $ sudoedit /etc/sleep-inhibitor.conf
 
 ### Automatic Startup as systemd Service
 
