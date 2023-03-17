@@ -119,7 +119,7 @@ class Plugin:
 
                 res = subprocess.run(self.icmd)
 
-            if not (self.is_inhibiting is False):
+            if self.is_inhibiting is not False:
                 self.is_inhibiting = False
                 self.log(f'{self.name} is not inhibiting '
                         f'suspend (return={res.returncode})')
