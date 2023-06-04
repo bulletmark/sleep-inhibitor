@@ -201,15 +201,14 @@ def init():
                    plugin_dir, inhibitor_prog)
             for index, plugin in enumerate(plugins, 1)]
 
-async def run():
-    'Main entry'
-    tasks = init()
-
-    # Wait for each plugin task to finish (i.e. wait forever)
+async def run(tasks):
+    'Wait for each plugin task to finish (i.e. wait forever)'
     await asyncio.gather(*(t.run() for t in tasks))
 
 def main():
-    asyncio.run(run())
+    'Main entry'
+    tasks = init()
+    asyncio.run(run(tasks))
 
 if __name__ == '__main__':
     main()
