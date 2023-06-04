@@ -11,7 +11,7 @@ here = Path(__file__).resolve().parent
 
 setup(
     name=name,
-    version='1.16',
+    version='1.17',
     description='Program to run plugins to inhibit system '
     'sleep/suspend/hibernate',
     long_description=here.joinpath('README.md').read_text(),
@@ -22,7 +22,7 @@ setup(
     keywords='bash',
     license='GPLv3',
     py_modules=[module],
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     install_requires=['ruamel.yaml'],
     classifiers=[
         'Programming Language :: Python :: 3',

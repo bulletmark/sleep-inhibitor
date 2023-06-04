@@ -1,0 +1,4 @@
+#!/bin/bash
+# Runs with a simple test configuration.
+# E.g. touch 1 2 3 to set all on, rm 1 2 3 to turn all off.
+../sleep_inhibitor.py -c test.conf -p $PWD | ts

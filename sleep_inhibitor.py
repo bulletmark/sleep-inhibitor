@@ -1,15 +1,14 @@
-#!/usr/bin/python3
+#!/usr/bin/python3 -u
 'Program to run plugins to inhibit system sleep/suspend.'
 # Requires python 3.6+
 # Mark Blakeney, Jul 2020.
 
-# Standard packages
-import sys
 import argparse
-import subprocess
-import threading
-import time
+import asyncio
 import shlex
+import subprocess
+import sys
+import time
 from pathlib import Path
 
 # Return code which indicates plugin wants to inhibit suspend
@@ -22,32 +21,26 @@ SYSTEMD_SLEEP_PROGS = (
     'systemd-inhibit',
 )
 
-def gettime(conf, field, default=None):
-    'Read time value from given conf.'
-    val = conf.get(field, default)
-    if val is None:
-        return None
-
+def conv_to_secs(val):
+    'Convert given time string to float seconds'
     if isinstance(val, str):
         if val.endswith('s'):
-            num = float(val[:-1]) / 60
-        elif val.endswith('m'):
             num = float(val[:-1])
-        elif val.endswith('h'):
+        elif val.endswith('m'):
             num = float(val[:-1]) * 60
+        elif val.endswith('h'):
+            num = float(val[:-1]) * 60 * 60
         else:
-            sys.exit(f'Invalid time value "{field}: {val}".')
+            sys.exit(f'Invalid time string "{val}".')
     else:
-        num = float(val)
+        # Default time entry is minutes
+        num = float(val) * 60
 
     return num
 
 class Plugin:
     'Class to manage each plugin'
-    loglock = threading.Lock()
-    threads = []
-
-    def __init__(self, index, prog, progname, def_period, def_period_on,
+    def __init__(self, index, prog, progname, period, period_on,
             def_what, conf, plugin_dir, inhibitor_prog):
         'Constructor'
         pathstr = conf.get('path')
@@ -69,15 +62,15 @@ class Plugin:
         if not path.exists():
             sys.exit(f'{self.name}: "{path}" does not exist')
 
-        period = gettime(conf, 'period')
-        if period is None:
-            period = def_period
-            period_on_def = def_period_on
-        else:
-            period_on_def = period
+        period_str = conf.get('period', period)
+        self.period = conv_to_secs(period_str)
 
-        period_on = gettime(conf, 'period_on', period_on_def)
-        self.period = period * 60
+        period_on_str = conf.get('period_on', period_on)
+        period_on = conv_to_secs(period_on_str)
+        if period_on > self.period:
+            period_on = self.period
+            period_on_str = period_str
+
         self.is_inhibiting = None
 
         cmd = str(path)
@@ -95,46 +88,31 @@ class Plugin:
         # run the plugin in a loop which keeps the inhibit on while the
         # inhibit state is returned.
         self.icmd = shlex.split(f'{inhibitor_prog}{what} --who="{progname}" '
-                f'--why="{self.name}" {prog} -s {period_on * 60} -i "{cmd}"')
+                f'--why="{self.name}" {prog} -s {period_on} -i "{cmd}"')
 
-        per = round(period, 3)
-        per_on = round(period_on, 3)
-        print(f'{self.name} [{path}] configured @ {per}/{per_on} minutes')
+        print(f'{self.name} [{path}] configured @ {period_str}/{period_on_str}')
 
-        # Each plugin periodic check runs in it's own thread
-        thread = threading.Thread(target=self.run)
-        thread.daemon = True
-        thread.start()
-        self.threads.append(thread)
-
-    def run(self):
-        'Worker function which runs it its own thread'
+    async def run(self):
+        'Worker function which runs as a asyncio task for each plugin'
         while True:
-            res = subprocess.run(self.cmd)
-            while res.returncode == SUSP_CODE:
+            proc = await asyncio.create_subprocess_exec(*self.cmd)
+            await proc.wait()
+
+            while proc.returncode == SUSP_CODE:
                 if not self.is_inhibiting:
                     self.is_inhibiting = True
-                    self.log(f'{self.name} is inhibiting '
-                            f'suspend (return={res.returncode})')
+                    print(f'{self.name} is inhibiting '
+                          f'suspend (return={proc.returncode})')
 
-                res = subprocess.run(self.icmd)
+                proc = await asyncio.create_subprocess_exec(*self.icmd)
+                await proc.wait()
 
             if self.is_inhibiting is not False:
                 self.is_inhibiting = False
-                self.log(f'{self.name} is not inhibiting '
-                        f'suspend (return={res.returncode})')
+                print(f'{self.name} is not inhibiting '
+                      f'suspend (return={proc.returncode})')
 
-            time.sleep(self.period)
-
-    @classmethod
-    def log(cls, msg):
-        'Thread locked print()'
-        if not msg.endswith('\n'):
-            msg += '\n'
-
-        # Use a lock so thread messages do not get interleaved
-        with cls.loglock:
-            sys.stdout.write(msg)
+            await asyncio.sleep(self.period)
 
 def init():
     'Program initialisation'
@@ -214,22 +192,21 @@ def init():
     plugin_dir = args.plugin_dir or conf.get('plugin_dir', plugin_dir)
 
     # Get some global defaults
-    period = gettime(conf, 'period', 5)
-    period_on = gettime(conf, 'period_on', period)
+    period = conf.get('period', '5m')
+    period_on = conf.get('period_on', period)
     what = conf.get('what')
 
     # Iterate to create each configured plugins
-    for index, plugin in enumerate(plugins, 1):
-        Plugin(index, prog, progname, period, period_on, what, plugin,
-                plugin_dir, inhibitor_prog)
+    return [Plugin(index, prog, progname, period, period_on, what, plugin,
+                   plugin_dir, inhibitor_prog)
+            for index, plugin in enumerate(plugins, 1)]
 
-def main():
+async def main():
     'Main entry'
-    init()
+    tasks = init()
 
-    # Wait for each thread to finish (i.e. wait forever)
-    for thread in Plugin.threads:
-        thread.join()
+    # Wait for each plugin task to finish (i.e. wait forever)
+    await asyncio.gather(*(t.run() for t in tasks))
 
 if __name__ == '__main__':
-    sys.exit(main())
+    asyncio.run(main(), debug=True)

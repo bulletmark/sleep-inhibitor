@@ -74,7 +74,7 @@ to execute the sleep inhibition lock.
 AUR](https://aur.archlinux.org/packages/sleep-inhibitor) then skip to
 the next Configuration section.
 
-Python 3.6 or later is required. The 3rd party ruamel.yaml package is
+Python 3.7 or later is required. The 3rd party ruamel.yaml package is
 also required. Note [_sleep-inhibitor_ is on
 PyPI](https://pypi.org/project/sleep-inhibitor/) so just ensure that
 `python3-pip` and `python3-wheel` are installed then type the following
