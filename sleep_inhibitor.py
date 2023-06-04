@@ -21,27 +21,29 @@ SYSTEMD_SLEEP_PROGS = (
     'systemd-inhibit',
 )
 
+TIMEMULTS = {'s': 1, 'm': 60, 'h': 3600}
+
 def conv_to_secs(val):
     'Convert given time string to float seconds'
-    if isinstance(val, str):
-        if val.endswith('s'):
-            num = float(val[:-1])
-        elif val.endswith('m'):
-            num = float(val[:-1]) * 60
-        elif val.endswith('h'):
-            num = float(val[:-1]) * 60 * 60
-        else:
-            sys.exit(f'Invalid time string "{val}".')
+    # Default input time value (without qualifier) is minutes
+    mult = isinstance(val, str) and TIMEMULTS.get(val[-1])
+    if mult:
+        valf = val[:-1]
     else:
-        # Default time entry is minutes
-        num = float(val) * 60
+        mult = 60
+        valf = val
 
-    return num
+    try:
+        valf = float(valf)
+    except Exception:
+        sys.exit(f'Invalid time string "{val}".')
+
+    return valf * mult
 
 class Plugin:
     'Class to manage each plugin'
     def __init__(self, index, prog, progname, period, period_on,
-            def_what, conf, plugin_dir, inhibitor_prog):
+                 def_what, conf, plugin_dir, inhibitor_prog):
         'Constructor'
         pathstr = conf.get('path')
         if not pathstr:
