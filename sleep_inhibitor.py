@@ -101,7 +101,7 @@ class Plugin:
             await proc.wait()
 
             while proc.returncode == SUSP_CODE:
-                if not self.is_inhibiting:
+                if self.is_inhibiting is not True:
                     self.is_inhibiting = True
                     print(f'{self.name} is inhibiting '
                           f'suspend (return={proc.returncode})')
@@ -128,10 +128,6 @@ def init():
     opt.add_argument('-i', '--inhibit', help=argparse.SUPPRESS)
     args = opt.parse_args()
 
-    # Don't run if this system does not support sleep
-    if not Path('/sys/power/state').read_text():
-        sys.exit('System does not support any sleep states, quitting.')
-
     # This instance may be a child invocation merely to run and check
     # the plugin while it is inhibiting.
     if args.inhibit:
@@ -141,6 +137,11 @@ def init():
             res = subprocess.run(cmd)
             if res.returncode != SUSP_CODE:
                 sys.exit(res.returncode)
+
+    # Don't run if this system does not support sleep
+    pstate = Path('/sys/power/state')
+    if not pstate.exists() or not pstate.read_text().strip():
+        sys.exit('System does not support any sleep states, quitting.')
 
     prog = Path(sys.argv[0]).resolve()
     progname = prog.stem.replace('_', '-')
