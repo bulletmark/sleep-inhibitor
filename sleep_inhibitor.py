@@ -98,21 +98,21 @@ class Plugin:
         'Worker function which runs as a asyncio task for each plugin'
         while True:
             proc = await asyncio.create_subprocess_exec(*self.cmd)
-            await proc.wait()
+            return_code = await proc.wait()
 
-            while proc.returncode == SUSP_CODE:
+            while return_code == SUSP_CODE:
                 if self.is_inhibiting is not True:
                     self.is_inhibiting = True
                     print(f'{self.name} is inhibiting '
-                          f'suspend (return={proc.returncode})')
+                          f'suspend (return={return_code})')
 
                 proc = await asyncio.create_subprocess_exec(*self.icmd)
-                await proc.wait()
+                return_code = await proc.wait()
 
             if self.is_inhibiting is not False:
                 self.is_inhibiting = False
                 print(f'{self.name} is not inhibiting '
-                      f'suspend (return={proc.returncode})')
+                      f'suspend (return={return_code})')
 
             await asyncio.sleep(self.period)
 
