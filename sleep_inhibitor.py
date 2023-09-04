@@ -41,10 +41,27 @@ def conv_to_secs(val):
 
     return valf * mult
 
+def run_command(command, display=":0"):
+    try:
+        # Set the DISPLAY and XAUTHORITY environment variables
+        env = os.environ.copy()
+        env["DISPLAY"] = display
+        
+        # Split the command string into a list of arguments
+        args = command.split()
+        
+        # Run the command with the modified environment
+        subprocess.run(args, check=True, env=env)
+        
+    except subprocess.CalledProcessError:
+        print("Failed to run xdotool command.")
+        return False
+    return True
+
 class Plugin:
     'Class to manage each plugin'
     def __init__(self, index, prog, progname, period, period_on,
-                 def_what, conf, plugin_dir, inhibitor_prog):
+                 def_what, conf, plugin_dir, inhibitor_prog, xdotool_workaround):
         'Constructor'
         pathstr = conf.get('path')
         if not pathstr:
@@ -86,6 +103,7 @@ class Plugin:
 
         whatval = conf.get('what', def_what)
         what = f' --what="{whatval}"' if whatval else ''
+        self.execute_xdotool = xdotool_workaround
 
         # While inhibiting, we run outself again via systemd-inhibit to
         # run the plugin in a loop which keeps the inhibit on while the
@@ -94,24 +112,6 @@ class Plugin:
                 f'--why="{self.name}" {prog} -s {period_on} -i "{cmd}"')
 
         print(f'{self.name} [{path}] configured @ {period_str}/{period_on_str}')
-
-    def run_command(plugin, command, user_home, display=":0"):
-        try:
-            # Set the DISPLAY and XAUTHORITY environment variables
-            env = os.environ.copy()
-            env["DISPLAY"] = display
-            env["XAUTHORITY"] = os.path.join(user_home, ".Xauthority")
-            
-            # Split the command string into a list of arguments
-            args = command.split()
-            
-            # Run the command with the modified environment
-            subprocess.run(args, check=True, env=env)
-            
-        except subprocess.CalledProcessError:
-            print("Failed to run xdotool command.")
-            return False
-        return True
 
     async def run(self):
         'Worker function which runs as a asyncio task for each plugin'
@@ -131,8 +131,8 @@ class Plugin:
             if self.is_inhibiting is not False:
                 self.is_inhibiting = False
                 
-                user_home = "/home/akasam"
-                self.run_command("xdotool mousemove 100 100", user_home)
+                if self.execute_xdotool:
+                    run_command("xdotool mousemove 100 100")
 
                 print(f'{self.name} is not inhibiting '
                       f'suspend (return={return_code})')
@@ -221,10 +221,11 @@ def init():
     period = conf.get('period', '5m')
     period_on = conf.get('period_on', period)
     what = conf.get('what')
+    xdotool_workaround = conf.get('xdotool_workaround', False)
 
     # Iterate to create each configured plugins
     return [Plugin(index, prog, progname, period, period_on, what, plugin,
-                   plugin_dir, inhibitor_prog)
+                   plugin_dir, inhibitor_prog, xdotool_workaround)
             for index, plugin in enumerate(plugins, 1)]
 
 async def run(tasks):
