@@ -54,7 +54,7 @@ def run_command(command, display=":0"):
         subprocess.run(args, check=True, env=env)
         
     except subprocess.CalledProcessError:
-        print("Failed to run xdotool command.")
+        print("Failed to run command.")
         return False
     return True
 
