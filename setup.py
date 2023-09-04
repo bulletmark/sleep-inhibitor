@@ -11,7 +11,7 @@ here = Path(__file__).resolve().parent
 
 setup(
     name=name,
-    version='1.20',
+    version='1.21',
     description='Program to run plugins to inhibit system '
     'sleep/suspend/hibernate',
     long_description=here.joinpath('README.md').read_text(),
