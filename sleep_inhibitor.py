@@ -6,6 +6,7 @@
 import argparse
 import asyncio
 import shlex
+import os
 import subprocess
 import sys
 import time
@@ -94,6 +95,24 @@ class Plugin:
 
         print(f'{self.name} [{path}] configured @ {period_str}/{period_on_str}')
 
+    def run_command(plugin, command, user_home, display=":0"):
+        try:
+            # Set the DISPLAY and XAUTHORITY environment variables
+            env = os.environ.copy()
+            env["DISPLAY"] = display
+            env["XAUTHORITY"] = os.path.join(user_home, ".Xauthority")
+            
+            # Split the command string into a list of arguments
+            args = command.split()
+            
+            # Run the command with the modified environment
+            subprocess.run(args, check=True, env=env)
+            
+        except subprocess.CalledProcessError:
+            print("Failed to run xdotool command.")
+            return False
+        return True
+
     async def run(self):
         'Worker function which runs as a asyncio task for each plugin'
         while True:
@@ -111,6 +130,10 @@ class Plugin:
 
             if self.is_inhibiting is not False:
                 self.is_inhibiting = False
+                
+                user_home = "/home/akasam"
+                self.run_command("xdotool mousemove 100 100", user_home)
+
                 print(f'{self.name} is not inhibiting '
                       f'suspend (return={return_code})')
 
