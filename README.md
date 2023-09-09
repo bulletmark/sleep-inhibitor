@@ -75,22 +75,19 @@ the next Configuration section.
 Python 3.7 or later is required. The 3rd party ruamel.yaml package is
 also required. Note [_sleep-inhibitor_ is on
 PyPI](https://pypi.org/project/sleep-inhibitor/) so just ensure that
-[`pipx`](https://pypa.github.io/pipx/) is installed then use it to
-install [`pipxx`](https://github.com/bulletmark/pipxx):
+[`pipx`](https://pypa.github.io/pipx/) is installed then:
 
-    $ pipx install pipxx
+To install:
 
-Then use `pipxx` to install sleep-inhibitor:
-
-    $ sudo pipxx install sleep-inhibitor
+    $ sudo PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/bin pipx install sleep-inhibitor
 
 To upgrade:
 
-    $ sudo pipxx upgrade sleep-inhibitor
+    $ sudo PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/bin pipx upgrade sleep-inhibitor
 
 To remove:
 
-    $ sudo pipxx uninstall sleep-inhibitor
+    $ sudo PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/bin pipx uninstall sleep-inhibitor
 
 Some plugins require other software to be installed. E.g. If you use the
 [`plex-media-server`](sleep_inhibitor/plugins/plex-media-server)
