@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sleep-inhibitor"
+description = "Program to run plugins to inhibit system sleep/suspend/hibernate"
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["bash", "systemd-inhibit", "sleep", "suspend", "hibernate"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+]
+dynamic = ["version"]
+dependencies = [
+  "ruamel.yaml",
+  "importlib-resources; python_version < '3.10'",
+]
+
+[[project.authors]]
+name = "Mark Blakeney"
+email = "mark.blakeney@bullet-systems.net"
+
+[project.urls]
+Homepage = "https://github.com/bulletmark/sleep-inhibitor"
+
+[project.scripts]
+sleep-inhibitor = "sleep_inhibitor.sleep_inhibitor:main"
+
+[project.license]
+text = "GPLv3"
+
+[tool.setuptools.package-data]
+"*" = ["*.conf", "*.service", "plugins/*"]
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+
+[tool.edit-lint]
+linters = [
+  "ruff",
+  "flake8",
+  "mypy",
+  "pyright",
+]
+
+# vim:se sw=2:

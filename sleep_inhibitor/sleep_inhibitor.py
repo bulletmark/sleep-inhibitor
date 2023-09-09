@@ -1,6 +1,5 @@
 #!/usr/bin/python3 -u
 'Program to run plugins to inhibit system sleep/suspend.'
-# Requires python 3.6+
 # Mark Blakeney, Jul 2020.
 
 import argparse
@@ -22,6 +21,14 @@ SYSTEMD_SLEEP_PROGS = (
 )
 
 TIMEMULTS = {'s': 1, 'm': 60, 'h': 3600}
+
+def get_package_dir(prog):
+    if sys.version_info >= (3, 10):
+        from importlib.resources import files
+    else:
+        from importlib_resources import files
+
+    return files(Path(prog).stem.replace('-', '_'))
 
 def conv_to_secs(val):
     'Convert given time string to float seconds'
@@ -124,9 +131,16 @@ def init():
             help='alternative configuration file')
     opt.add_argument('-p', '--plugin-dir',
             help='alternative plugin dir')
+    opt.add_argument('-P', '--package-dir', action='store_true',
+            help='just show directory where sample conf/service files, '
+                     'and default plugins can be found')
     opt.add_argument('-s', '--sleep', type=float, help=argparse.SUPPRESS)
     opt.add_argument('-i', '--inhibit', help=argparse.SUPPRESS)
     args = opt.parse_args()
+
+    if args.package_dir:
+        print(get_package_dir(opt.prog))
+        sys.exit()
 
     # This instance may be a child invocation merely to run and check
     # the plugin while it is inhibiting.

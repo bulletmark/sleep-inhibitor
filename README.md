@@ -10,18 +10,16 @@ default plugins provided are:
 
 1. Plugin to inhibit sleep while any audio is playing.
 
-2. Plugin to inhibit sleep while [Plex](https://plex.tv/) media server is serving
-   content.
+2. Plugins to inhibit sleep while [Plex](https://plex.tv/) or
+   [Jellyfin](https://jellyfin.org/) media server is serving media
+   server is serving content.
 
-3. Plugin to inhibit sleep while [Jellyfin](https://jellyfin.org/) media server is serving
-   content.
-
-4. Plugin to inhibit sleep while a specified process is running. I
+3. Plugin to inhibit sleep while a specified process is running. I
    use this to prevent sleep while my home backup is running.
 
 You can also create your own custom plugins. They are extremely trivial
 to create as can be seen in the [provided
-examples](https://github.com/bulletmark/sleep-inhibitor/tree/master/plugins).
+examples](sleep_inhibitor/plugins).
 A plugin can be created in shell script or any programming language. It
 must simply return an exit code to indicate whether the system should can be
 slept/suspended, or not. _Sleep-inhibitor_ runs each plugin at the
@@ -31,23 +29,23 @@ inhibit sleep or not until at least the next check period.
 The latest version of this document and code is available at
 https://github.com/bulletmark/sleep-inhibitor.
 
-:warning: **Warning**: Unfortunately this program is currently slightly
+:warning: **Warning**: Unfortunately this program is currently somewhat
 handicapped due to [this systemd
 issue](https://github.com/systemd/systemd/issues/14812). Until this
 issue is addressed, your system may not automatically [re-]suspend if
 still idle after it has been inhibited, even though _sleep-inhibitor_
 has removed the inhibit.
 
-### Motivation
+## Motivation
 
 When looking for a solution for this issue I found the
 [autosuspend](https://autosuspend.readthedocs.io/en/3.0/index.html)
-package but, apart from providing plugins, that package actually
+package but, in addition to providing plugins, that package also
 implements the complete sleep, resume, and wakeup logic. I also found
 the configuration and documentation confusing. I am happy with and
-prefer to use the native sleep systems and I desired a simpler more
-lightweight approach that merely provided the ability to inhibit sleep
-for some special situations.
+prefer to use the native Linux sleep systems and I desired a simpler
+more lightweight approach that merely provided the ability to inhibit
+these sleep systems for some special situations.
 
 1. On Linux desktop systems, I prefer to use the standard GNOME power
    management GUI tools to automatically manage sleep/suspend (via
@@ -67,7 +65,7 @@ inhibit sleep for specified conditions. _Sleep-inhibitor_ uses
 [`systemd-inhibit`](https://www.freedesktop.org/software/systemd/man/systemd-inhibit.html)
 to execute the sleep inhibition lock.
 
-### Installation
+## Installation
 
 [Arch](https://www.archlinux.org/) users can just install
 [_sleep-inhibitor_ from the
@@ -77,50 +75,52 @@ the next Configuration section.
 Python 3.7 or later is required. The 3rd party ruamel.yaml package is
 also required. Note [_sleep-inhibitor_ is on
 PyPI](https://pypi.org/project/sleep-inhibitor/) so just ensure that
-`python3-pip` and `python3-wheel` are installed then type the following
-to install (or upgrade):
+[`pipx`](https://pypa.github.io/pipx/) is installed then use it to
+install [`pipxx`](https://github.com/bulletmark/pipxx):
 
-    $ sudo pip3 install -U sleep-inhibitor
+    $ pipx install pipxx
 
-If you want to install it yourself from the source repository:
+Then use `pipxx` to install sleep-inhibitor:
 
-    $ git clone https://github.com/bulletmark/sleep-inhibitor.git
-    $ cd sleep-inhibitor
-    $ sudo pip3 install -U .
+    $ sudo pipxx install sleep-inhibitor
 
-To uninstall:
+To upgrade:
 
-    $ sudo pip3 uninstall sleep-inhibitor
+    $ sudo pipxx upgrade sleep-inhibitor
+
+To remove:
+
+    $ sudo pipxx uninstall sleep-inhibitor
 
 Some plugins require other software to be installed. E.g. If you use the
-[`plex-media-server`](https://github.com/bulletmark/sleep-inhibitor/blob/master/plugins/plex-media-server)
+[`plex-media-server`](sleep_inhibitor/plugins/plex-media-server)
 or
-[`jellyfin-server`](https://github.com/bulletmark/sleep-inhibitor/blob/master/plugins/jellyfin-server)
+[`jellyfin-server`](sleep_inhibitor/plugins/jellyfin-server)
 plugins then you must install [`curl`](https://curl.se/).
 
-### Configuration
+## Configuration
 
 To start, copy the sample
-[`sleep-inhibitor.conf`](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.conf)
+[`sleep-inhibitor.conf`](sleep_inhibitor/sleep-inhibitor.conf)
 configuration file to `/etc/sleep-inhibitor.conf` and then edit the
 sample settings in that target file to add/configure plugins to your
 requirements. The instructions and a description of all configuration
 options are fully documented in the [sample configuration
-file](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.conf).
+file](sleep_inhibitor/sleep-inhibitor.conf).
 
-    $ sudo cp /usr/share/sleep-inhibitor/sleep-inhibitor.conf /etc
+    $ sudo cp "$(sleep-inhibitor -P)/sleep-inhibitor.conf" /etc
     $ sudoedit /etc/sleep-inhibitor.conf
 
-### Automatic Startup as systemd Service
+## Automatic Startup as systemd Service
 
 If you installed from source or via `pip` then copy the included
-[`sleep-inhibitor.service`](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.service)
+[`sleep-inhibitor.service`](sleep-/sleep-inhibitor.service)
 to `/etc/systemd/system/` (note that [Arch](https://www.archlinux.org/)
 users who installed from
 [AUR](https://aur.archlinux.org/packages/sleep-inhibitor) can skip this
 first step):
 
-    $ sudo cp /usr/share/sleep-inhibitor/sleep-inhibitor.service /etc/systemd/system/
+    $ sudo cp "$(sleep-inhibitor -P)/sleep-inhibitor.service" /etc/systemd/system/
 
 Start sleep-indicator and enable it to automatically start at reboot with:
 
@@ -135,37 +135,39 @@ To see status and logs:
     $ systemctl status sleep-inhibitor
     $ journalctl -u sleep-inhibitor
 
-### Plugins
+## Plugins
 
 To use the [standard
-plugins](https://github.com/bulletmark/sleep-inhibitor/tree/master/plugins)
+plugins](sleep_inhibitor/plugins)
 distributed with this package just specify the plugin name (i.e. the
 file name) as the `path` parameter in the [configuration
-file](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.conf).
+file](sleep_inhibitor/sleep-inhibitor.conf).
 To use your own custom plugins, just specify the absolute path to that
 plugin. E.g. you can put your custom plugin at `/home/user/bin/myplugin`
 and just specify that full path in the [configuration
-file](https://github.com/bulletmark/sleep-inhibitor/blob/master/sleep-inhibitor.conf).
+file](sleep_inhibitor/sleep-inhibitor.conf).
 
 A plugin can be any executable script/program which simply returns exit
 code 254 to inhibit suspend, or anything else (usually 0 of course) to
 not suspend. They can be very trivial to create as the provided [example
-plugins](https://github.com/bulletmark/sleep-inhibitor/tree/master/plugins)
+plugins](sleep_inhibitor/plugins)
 demonstrate. A plugin can be created in any language you prefer such as
 Shell, Python, Ruby, C/C++, etc.
 
 The plugin does not normally receive any arguments although you can
 choose to specify arbitrary arguments to any plugin via the configuration
 file, e.g. a sensitive token/password as the example
-[`plex-media-server`](https://github.com/bulletmark/sleep-inhibitor/blob/master/plugins/plex-media-server)
+[`plex-media-server`](sleep_inhibitor/plugins/plex-media-server)
 plugin requires, or the process name for the example
-[`is-process-running`](https://github.com/bulletmark/sleep-inhibitor/blob/master/plugins/is-process-running)
+[`is-process-running`](sleep_inhibitor/plugins/is-process-running)
 plugin.
 
-### Command Line Usage
+## Command Line Usage
+
+Type `sleep-inhibitor -h` to view the usage summary:
 
 ```
-usage: sleep-inhibitor [-h] [-c CONFIG] [-p PLUGIN_DIR]
+usage: sleep-inhibitor [-h] [-c CONFIG] [-p PLUGIN_DIR] [-P]
 
 Program to run plugins to inhibit system sleep/suspend.
 
@@ -175,9 +177,11 @@ options:
                         alternative configuration file
   -p PLUGIN_DIR, --plugin-dir PLUGIN_DIR
                         alternative plugin dir
+  -P, --package-dir     just show directory where sample conf/service files,
+                        and default plugins can be found
 ```
 
-### License
+## License
 
 Copyright (C) 2020 Mark Blakeney. This program is distributed under the
 terms of the GNU General Public License. This program is free software:

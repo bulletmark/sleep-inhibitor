@@ -1,28 +1,23 @@
 NAME = $(shell basename $(CURDIR))
 PYNAME = $(subst -,_,$(NAME))
 
-all:
-	@echo "Type sudo make install|uninstall"
-	@echo "or make sdist|upload|check|clean"
-
-install:
-	pip3 install -U --root-user-action=ignore .
-
-uninstall:
-	pip3 uninstall --root-user-action=ignore $(NAME)
-
-sdist:
-	rm -rf dist
-	python3 setup.py sdist bdist_wheel
-
-upload: sdist
-	twine3 upload --skip-existing dist/*
-
 check:
 	ruff .
-	vermin --no-tips -i $(PYNAME).py setup.py
-	python3 setup.py check
-	shellcheck plugins/*
+	flake8 */*.py
+	mypy */*.py
+	pyright */*.py
+	vermin -vv --exclude importlib.resources.files --no-tips -i */*.py */*/*.py
+
+build:
+	rm -rf dist
+	python3 -m build
+
+upload: build
+	twine3 upload dist/*
+
+doc:
+	update-readme-usage
 
 clean:
-	@rm -vrf *.egg-info build/ dist/ __pycache__/
+	@rm -vrf *.egg-info */*.egg-info .venv/ build/ dist/ __pycache__/ \
+          */__pycache__ */*/__pycache__
