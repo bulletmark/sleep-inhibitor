@@ -22,14 +22,6 @@ SYSTEMD_SLEEP_PROGS = (
 
 TIMEMULTS = {'s': 1, 'm': 60, 'h': 3600}
 
-def get_package_dir(prog):
-    if sys.version_info >= (3, 10):
-        from importlib.resources import files
-    else:
-        from importlib_resources import files
-
-    return files(Path(prog).stem.replace('-', '_'))
-
 def conv_to_secs(val):
     'Convert given time string to float seconds'
     # Default input time value (without qualifier) is minutes
@@ -138,8 +130,10 @@ def init():
     opt.add_argument('-i', '--inhibit', help=argparse.SUPPRESS)
     args = opt.parse_args()
 
+    base_dir = Path(__file__).resolve().parent
+
     if args.package_dir:
-        print(get_package_dir(opt.prog))
+        print(base_dir)
         sys.exit()
 
     # This instance may be a child invocation merely to run and check
@@ -178,25 +172,16 @@ def init():
         opts = ' or '.join(SYSTEMD_SLEEP_PROGS)
         sys.exit(f'No systemd-inhibitor app installed from one of {opts}.')
 
-    # Work out plugin and base dirs for this installation
-    plugin_dir = Path(sys.prefix) / 'share' / progname / 'plugins'
-    if plugin_dir.exists():
-        base_dir = plugin_dir.parent
-    else:
-        plugin_dir = None
-        base_dir = None
-
     # Determine config file path
     cname = progname + '.conf'
     cfile = Path(args.config).expanduser() if args.config else \
             Path(f'/etc/{cname}')
 
     if not cfile.exists():
-        print(f'Configuration file {cfile} does not exist.', file=sys.stderr)
-        if base_dir and not args.config:
-            print(f'Copy {base_dir}/{cname} to /etc and edit appropriately.',
-                    file=sys.stderr)
-        sys.exit()
+        err = f'Configuration file {cfile} does not exist.'
+        if not args.config:
+            err += f' Copy {base_dir}/{cname} to /etc and edit appropriately.'
+        sys.exit(err)
 
     from ruamel.yaml import YAML
     conf = YAML(typ='safe').load(cfile)
@@ -206,6 +191,8 @@ def init():
         sys.exit('No plugins configured')
 
     # Work out plugin dir
+    plugin_dir = base_dir / 'plugins'
+    plugin_dir = str(plugin_dir) if plugin_dir.is_dir() else None
     plugin_dir = args.plugin_dir or conf.get('plugin_dir', plugin_dir)
 
     # Get some global defaults

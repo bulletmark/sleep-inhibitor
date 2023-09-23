@@ -14,7 +14,6 @@ classifiers = [
 dynamic = ["version"]
 dependencies = [
   "ruamel.yaml",
-  "importlib-resources; python_version < '3.10'",
 ]
 
 [[project.authors]]
