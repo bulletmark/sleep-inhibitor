@@ -2,7 +2,7 @@
 Description=Sleep Inhibitor Service
 
 [Service]
-ExecStart=/usr/bin/python3 -u /usr/bin/%p
+ExecStart=/usr/bin/%p
 
 [Install]
 WantedBy=default.target

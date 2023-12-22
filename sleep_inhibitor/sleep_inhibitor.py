@@ -1,4 +1,5 @@
-#!/usr/bin/python3 -u
+#!/usr/bin/python3
+
 'Program to run plugins to inhibit system sleep/suspend.'
 # Mark Blakeney, Jul 2020.
 
@@ -21,6 +22,9 @@ SYSTEMD_SLEEP_PROGS = (
 )
 
 TIMEMULTS = {'s': 1, 'm': 60, 'h': 3600}
+
+def log(msg):
+    print(msg, flush=True)
 
 def conv_to_secs(val):
     'Convert given time string to float seconds'
@@ -91,7 +95,7 @@ class Plugin:
         self.icmd = shlex.split(f'{inhibitor_prog}{what} --who="{progname}" '
                 f'--why="{self.name}" {prog} -s {period_on} -i "{cmd}"')
 
-        print(f'{self.name} [{path}] configured @ {period_str}/{period_on_str}')
+        log(f'{self.name} [{path}] configured @ {period_str}/{period_on_str}')
 
     async def run(self):
         'Worker function which runs as a asyncio task for each plugin'
@@ -102,16 +106,16 @@ class Plugin:
             while return_code == SUSP_CODE:
                 if self.is_inhibiting is not True:
                     self.is_inhibiting = True
-                    print(f'{self.name} is inhibiting '
-                          f'suspend (return={return_code})')
+                    log(f'{self.name} is inhibiting '
+                        f'suspend (return={return_code})')
 
                 proc = await asyncio.create_subprocess_exec(*self.icmd)
                 return_code = await proc.wait()
 
             if self.is_inhibiting is not False:
                 self.is_inhibiting = False
-                print(f'{self.name} is not inhibiting '
-                      f'suspend (return={return_code})')
+                log(f'{self.name} is not inhibiting '
+                    f'suspend (return={return_code})')
 
             await asyncio.sleep(self.period)
 
@@ -133,7 +137,7 @@ def init():
     base_dir = Path(__file__).resolve().parent
 
     if args.package_dir:
-        print(base_dir)
+        log(base_dir)
         sys.exit()
 
     # This instance may be a child invocation merely to run and check
@@ -165,7 +169,7 @@ def init():
             continue
 
         vers = res.stdout.split('\n')[0].strip()
-        print(f'{progname} using {iprog}, {vers}')
+        log(f'{progname} using {iprog}, {vers}')
         inhibitor_prog = iprog
 
     if not inhibitor_prog:
