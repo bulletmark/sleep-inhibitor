@@ -31,10 +31,12 @@ https://github.com/bulletmark/sleep-inhibitor.
 
 :warning: **Warning**: Unfortunately this program is currently somewhat
 handicapped due to [this systemd
-issue](https://github.com/systemd/systemd/issues/14812). Until this
-issue is addressed, your system may not automatically [re-]suspend if
-still idle after it has been inhibited, even though _sleep-inhibitor_
-has removed the inhibit.
+issue](https://github.com/systemd/systemd/issues/14812) (and/or [this
+GNOME
+issue](https://gitlab.gnome.org/GNOME/gnome-settings-daemon/-/issues/591)).
+Until this issue is addressed, your system may not automatically
+[re-]suspend if still idle after it has been inhibited, even though
+_sleep-inhibitor_ has removed the inhibit.
 
 ## Motivation
 
