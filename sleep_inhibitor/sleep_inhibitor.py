@@ -187,7 +187,7 @@ def init():
             err += f' Copy {base_dir}/{cname} to /etc and edit appropriately.'
         sys.exit(err)
 
-    from ruamel.yaml import YAML
+    from ruamel.yaml import YAML  # type: ignore
     conf = YAML(typ='safe').load(cfile)
 
     plugins = conf.get('plugins')

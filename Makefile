@@ -2,7 +2,7 @@ NAME = $(shell basename $(CURDIR))
 PYNAME = $(subst -,_,$(NAME))
 
 check:
-	ruff .
+	ruff check .
 	flake8 */*.py
 	mypy */*.py
 	pyright */*.py
