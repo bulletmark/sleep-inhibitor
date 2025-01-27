@@ -37,8 +37,7 @@ version_scheme = "post-release"
 
 [tool.edit-lint]
 linters = [
-  "ruff",
-  "flake8",
+  "ruff check",
   "mypy",
   "pyright",
 ]
