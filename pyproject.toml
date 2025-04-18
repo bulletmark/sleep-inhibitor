@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "sleep-inhibitor"
 description = "Program to run plugins to inhibit system sleep/suspend/hibernate"
 readme = "README.md"
+license = "GPL-3.0-or-later"
 requires-python = ">=3.7"
 keywords = ["bash", "systemd-inhibit", "sleep", "suspend", "hibernate"]
 classifiers = [
@@ -25,9 +26,6 @@ Homepage = "https://github.com/bulletmark/sleep-inhibitor"
 
 [project.scripts]
 sleep-inhibitor = "sleep_inhibitor.sleep_inhibitor:main"
-
-[project.license]
-text = "GPLv3"
 
 [tool.setuptools.package-data]
 "*" = ["*.conf", "*.service", "plugins/*"]
