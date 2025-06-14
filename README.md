@@ -113,7 +113,7 @@ file](sleep_inhibitor/sleep-inhibitor.conf).
 ## Automatic Startup as systemd Service
 
 If you installed from source or via `pip` then copy the included
-[`sleep-inhibitor.service`](sleep-/sleep-inhibitor.service)
+[`sleep-inhibitor.service`](sleep_inhibitor/sleep-inhibitor.service)
 to `/etc/systemd/system/` (note that [Arch](https://www.archlinux.org/)
 users who installed from
 [AUR](https://aur.archlinux.org/packages/sleep-inhibitor) can skip this
