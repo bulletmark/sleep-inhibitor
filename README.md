@@ -77,7 +77,7 @@ the next Configuration section.
 Python 3.7 or later is required. The 3rd party ruamel.yaml package is
 also required. Note [_sleep-inhibitor_ is on
 PyPI](https://pypi.org/project/sleep-inhibitor/) so just ensure that
-[`pipx`](https://pypa.github.io/pipx/) is installed then:
+[`pipx`](https://pipx.pypa.io/stable/) is installed then:
 
 To install:
 
