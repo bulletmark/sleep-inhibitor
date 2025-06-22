@@ -6,6 +6,7 @@ check:
 	mypy */*.py
 	pyright */*.py
 	vermin -vv --exclude importlib.resources.files --no-tips -i */*.py */*/*.py
+	md-link-checker
 
 build:
 	rm -rf dist

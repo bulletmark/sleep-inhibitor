@@ -122,7 +122,7 @@ class Plugin:
 def init():
     'Program initialisation'
     # Process command line options
-    opt = argparse.ArgumentParser(description=__doc__.strip())
+    opt = argparse.ArgumentParser(description=__doc__)
     opt.add_argument('-c', '--config',
             help='alternative configuration file')
     opt.add_argument('-p', '--plugin-dir',
