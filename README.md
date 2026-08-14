@@ -172,9 +172,8 @@ Program to run plugins to inhibit system sleep/suspend.
 
 options:
   -h, --help            show this help message and exit
-  -c CONFIG, --config CONFIG
-                        alternative configuration file
-  -p PLUGIN_DIR, --plugin-dir PLUGIN_DIR
+  -c, --config CONFIG   alternative configuration file
+  -p, --plugin-dir PLUGIN_DIR
                         alternative plugin dir
   -P, --package-dir     just show directory where sample conf/service files,
                         and default plugins can be found
