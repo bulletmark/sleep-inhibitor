@@ -80,8 +80,8 @@ class Plugin:
             path = plugin_dir / path
 
         path = path.resolve()
-        if not path.exists():
-            sys.exit(f'{self.name}: "{path}" does not exist')
+        if not path.is_file():
+            sys.exit(f'{self.name}: "{path}" file does not exist')
 
         period_str = conf.get('period', period)
         self.period = conv_to_secs(period_str)
@@ -171,7 +171,7 @@ def init():
 
     # Don't run if this system does not support sleep
     pstate = Path('/sys/power/state')
-    if not pstate.exists() or not pstate.read_text().strip():
+    if not pstate.is_file() or not pstate.read_text().strip():
         sys.exit('System does not support any sleep states, quitting.')
 
     prog = Path(sys.argv[0]).resolve()
@@ -206,10 +206,10 @@ def init():
         cfile = Path(args.config).expanduser()
     else:
         cfile = Path(f'/etc/{cname}')
-        if not cfile.exists():
+        if not cfile.is_file():
             cfile = Path(f'/usr/share/{progname}/{cname}')
 
-    if not cfile.exists():
+    if not cfile.is_file():
         err = f'Configuration file {cfile} does not exist.'
         if not args.config:
             err += f' Copy {base_dir}/{cname} to /etc and edit appropriately.'
