@@ -200,9 +200,14 @@ def init():
         opts = ' or '.join(SYSTEMD_SLEEP_PROGS)
         sys.exit(f'No systemd-inhibitor app installed from one of {opts}.')
 
-    # Determine config file path
+    # Determine config file path with priority of arg, etc, usr/share
     cname = progname + '.conf'
-    cfile = Path(args.config).expanduser() if args.config else Path(f'/etc/{cname}')
+    if args.config:
+        cfile = Path(args.config).expanduser()
+    elif Path(f'/etc/{cname}').exists():
+        cfile = Path(f'/etc/{cname}')
+    else:
+        cfile = Path(f'/usr/share/{progname}/{cname}')
 
     if not cfile.exists():
         err = f'Configuration file {cfile} does not exist.'
