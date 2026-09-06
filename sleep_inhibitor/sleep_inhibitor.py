@@ -204,10 +204,10 @@ def init():
     cname = progname + '.conf'
     if args.config:
         cfile = Path(args.config).expanduser()
-    elif Path(f'/etc/{cname}').exists():
-        cfile = Path(f'/etc/{cname}')
     else:
-        cfile = Path(f'/usr/share/{progname}/{cname}')
+        cfile = Path(f'/etc/{cname}')
+        if not cfile.exists():
+            cfile = Path(f'/usr/share/{progname}/{cname}')
 
     if not cfile.exists():
         err = f'Configuration file {cfile} does not exist.'
